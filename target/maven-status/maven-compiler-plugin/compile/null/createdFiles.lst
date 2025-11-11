@@ -1,0 +1,5 @@
+br/com/fiap/biblioteca/exception/ResourceNotFoundException.class
+br/com/fiap/biblioteca/infra/dao/UsuarioDAO.class
+br/com/fiap/biblioteca/controller/UsuarioController.class
+br/com/fiap/biblioteca/model/Usuario.class
+br/com/fiap/biblioteca/service/UsuarioService.class
