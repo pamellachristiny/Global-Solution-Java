@@ -1,7 +1,7 @@
 package br.com.fiap.biblioteca.service;
 
 import br.com.fiap.biblioteca.model.Usuario;
-import br.com.fiap.biblioteca.infra.dao.UsuarioDAO;
+import br.com.fiap.global.infra.dao.UsuarioDAO;
 import br.com.fiap.biblioteca.exception.ResourceNotFoundException;
 
 import jakarta.enterprise.context.ApplicationScoped;

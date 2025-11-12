@@ -1,4 +1,4 @@
-package br.com.fiap.biblioteca.infra.dao;
+package br.com.fiap.global.infra.dao;
 
 import br.com.fiap.biblioteca.model.Usuario;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
