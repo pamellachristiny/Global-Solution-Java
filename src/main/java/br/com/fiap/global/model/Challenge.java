@@ -1,43 +1,49 @@
 package br.com.fiap.global.model;
 
-public class Challenge {
-    private int id;
-    private String title;
-    private String description;
-    private String difficulty; // easy, medium, hard
-    private int rewardPoints;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "TB_CHALLENGE")
+public class Challenge extends PanacheEntity {
+
+    // NOVO CAMPO: Chave estrangeira para a tabela Curso
+    @ManyToOne
+    public Curso curso; // Panache permite campos públicos
+
+    // Campos existentes
+    private String nomeChallenge;
+    private String descricaoChallenge;
+    private LocalDate tempo;
+
+    // ... (Construtores, Getters e Setters simplificados) ...
 
     public Challenge() {}
 
-    public Challenge(int id, String title, String description, String difficulty, int rewardPoints) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.difficulty = difficulty;
-        this.rewardPoints = rewardPoints;
-    }
-
-    public Challenge(String title, String description, String difficulty, int rewardPoints) {
-        this.title = title;
-        this.description = description;
-        this.difficulty = difficulty;
-        this.rewardPoints = rewardPoints;
+    public Challenge(String nomeChallenge, String descricaoChallenge, LocalDate tempo, Curso curso) {
+        this.nomeChallenge = nomeChallenge;
+        this.descricaoChallenge = descricaoChallenge;
+        this.tempo = tempo;
+        this.curso = curso;
     }
 
     // Getters e Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-    public String getDifficulty() { return difficulty; }
-    public void setDifficulty(String difficulty) { this.difficulty = difficulty; }
-    public int getRewardPoints() { return rewardPoints; }
-    public void setRewardPoints(int rewardPoints) { this.rewardPoints = rewardPoints; }
+    public Long getId() {return this.id;}
+    public void setId(Long id) {this.id = id;}
 
-    @Override
-    public String toString() {
-        return String.format("[%d] %s (%s) - %d pts", id, title, difficulty, rewardPoints);
-    }
+    public String getNomeChallenge() { return nomeChallenge; }
+    public void setNomeChallenge(String nomeChallenge) { this.nomeChallenge = nomeChallenge; }
+
+    public String getDescricaoChallenge() { return descricaoChallenge; }
+    public void setDescricaoChallenge(String descricaoChallenge) { this.descricaoChallenge = descricaoChallenge; }
+
+    public LocalDate getTempo() { return tempo; }
+    public void setTempo(LocalDate tempo) { this.tempo = tempo; }
+
+    public Curso getCurso() { return curso; }
+    public void setCurso(Curso curso) { this.curso = curso; }
 }

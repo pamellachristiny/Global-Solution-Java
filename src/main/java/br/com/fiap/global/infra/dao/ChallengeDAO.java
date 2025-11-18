@@ -1,77 +1,48 @@
-package br.com.fiap.global.infra.dao;
+package br.com.fiap.global.dao;
 
-import br.com.fiap.global.model.Challenge; // Importa o modelo Challenge
-
+import br.com.fiap.global.model.Challenge;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class ChallengeDAO {
 
-    @Inject
-    DataSource dataSource;
-
-    private Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    public List<Challenge> findAll() {
+        return Challenge.listAll();
     }
 
-    /**
-     * Insere um novo desafio no banco de dados.
-     */
-    public void save(Challenge challenge) throws SQLException {
-        // Colunas do SQL atualizadas para corresponder ao modelo
-        String sql = "INSERT INTO challenges (title, description, difficulty, reward_points) VALUES (?, ?, ?, ?)";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, challenge.getTitle());        // getTitle()
-            stmt.setString(2, challenge.getDescription());
-            stmt.setString(3, challenge.getDifficulty());   // getDifficulty()
-            stmt.setInt(4, challenge.getRewardPoints());    // getRewardPoints()
-
-            stmt.executeUpdate();
-            conn.commit();
-        }
+    public Optional<Challenge> findById(Long id) {
+        return Optional.ofNullable(Challenge.findById(id));
     }
 
-    /**
-     * Utilitário para mapear um ResultSet para um objeto Challenge.
-     */
-    private Challenge mapChallenge(ResultSet rs) throws SQLException {
-        Challenge challenge = new Challenge();
-        challenge.setId(rs.getInt("id"));
-        challenge.setTitle(rs.getString("title"));
-        challenge.setDescription(rs.getString("description"));
-        challenge.setDifficulty(rs.getString("difficulty"));
-        challenge.setRewardPoints(rs.getInt("reward_points"));
+    @Transactional
+    public Challenge create(Challenge challenge) {
+        challenge.persist();
         return challenge;
     }
 
-    /**
-     * Busca todos os desafios no banco de dados.
-     */
-    public List<Challenge> findAll() throws SQLException {
-        List<Challenge> challenges = new ArrayList<>();
-        // Colunas do SQL atualizadas para corresponder ao modelo
-        String sql = "SELECT id, title, description, difficulty, reward_points FROM challenges ORDER BY reward_points ASC";
+    @Transactional
+    public Optional<Challenge> update(Challenge challenge) {
+        // Encontra o registro existente
+        Optional<Challenge> existing = findById(challenge.getId());
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                challenges.add(mapChallenge(rs));
-            }
+        if (existing.isPresent()) {
+            Challenge entity = existing.get();
+            // Atualiza os campos
+            entity.setNomeChallenge(challenge.getNomeChallenge());
+            entity.setDescricaoChallenge(challenge.getDescricaoChallenge());
+            entity.setTempo(challenge.getTempo());
+            // Panache/Hibernate faz o save automaticamente por ser @Transactional
+            return Optional.of(entity);
         }
-        return challenges;
+        return Optional.empty();
+    }
+
+    @Transactional
+    public boolean deleteById(Long id) {
+        return Challenge.deleteById(id);
     }
 }

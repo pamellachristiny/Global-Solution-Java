@@ -1,53 +1,61 @@
-package br.com.fiap.biblioteca.service;
+package br.com.fiap.global.service;
 
-import br.com.fiap.biblioteca.model.Usuario;
-import br.com.fiap.global.infra.dao.UsuarioDAO;
-import br.com.fiap.biblioteca.exception.ResourceNotFoundException;
-
+import br.com.fiap.global.dao.UserDAO;
+import br.com.fiap.global.model.User;
+// IMPORTS DE EXCEÇÕES CORRIGIDOS
+import br.com.fiap.global.exception.RecursoNaoEncontradoException;
+import br.com.fiap.global.exception.RequisicaoInvalidaException;
 import jakarta.enterprise.context.ApplicationScoped;
+// ANOTAÇÃO @Inject Adicionada
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
+
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
-public class UsuarioService {
+public class UserService {
 
-    @Inject
-    UsuarioDAO dao;
+    @Inject // <--- VOCÊ PRECISA DESTA ANOTAÇÃO AQUI
+    UserDAO userDAO;
 
-    public List<Usuario> listar() {
-        return dao.listAll();
+    public List<User> findAll() {
+        return userDAO.findAll();
     }
 
-    public Usuario buscarPorId(Long id) {
-        return dao.findByIdOptional(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o ID: " + id));
+    public User buscarPorIdOuFalhar(Long id) {
+        return userDAO.findById(id)
+                .orElseThrow(() ->
+                        new RecursoNaoEncontradoException("Usuário não encontrado para o ID: " + id));
     }
 
-    @Transactional
-    public Usuario criar(Usuario usuario) {
-        if (dao.buscarPorEmail(usuario.getEmail()) != null) {
-            throw new IllegalStateException("Erro de Negócio: E-mail já cadastrado.");
+    public User create(User user) {
+        // Lógica de validação simples antes de criar
+        if (user.getNome() == null || user.getNome().trim().isEmpty()) {
+            throw new RequisicaoInvalidaException("O nome do usuário é obrigatório.");
+        }
+        return userDAO.create(user);
+    }
+
+    public User update(Long id, User updatedDetails) {
+        // 1. Garante que o usuário existe antes de tentar atualizar (ou lança 404)
+        buscarPorIdOuFalhar(id);
+
+        // 2. Lógica de validação (lança 400 se for inválido)
+        if (updatedDetails.getNome() == null || updatedDetails.getNome().trim().isEmpty()) {
+            throw new RequisicaoInvalidaException("O nome do usuário não pode ser vazio.");
         }
 
-        dao.persist(usuario);
-        return usuario;
+        // 3. Atualiza. Já que userDAO.update usa findById(id) e depois atualiza o objeto rastreado.
+        updatedDetails.setId(id);
+
+        return userDAO.update(updatedDetails)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Falha na atualização para o ID: " + id));
     }
 
-    @Transactional
-    public Usuario atualizar(Long id, Usuario dadosNovos) {
-        Usuario usuario = buscarPorId(id);
-        usuario.setNome(dadosNovos.getNome());
-        usuario.setEmail(dadosNovos.getEmail());
-        usuario.setSenha(dadosNovos.getSenha());
-        return usuario;
-    }
-
-    @Transactional
-    public void deletar(Long id) {
-        boolean deletado = dao.deleteById(id);
-        if (!deletado) {
-            throw new ResourceNotFoundException("Usuário não encontrado para exclusão com o ID: " + id);
-        }
+    public boolean delete(Long id) {
+        // Verifica se o usuário existe antes de deletar, para retornar um 404 se não existir.
+        // Se preferir, pode apenas chamar userDAO.deleteById(id) e deixar o caller lidar com o resultado.
+        // Vamos manter a lógica simples, pois o DAO já tem o deleteById.
+        return userDAO.deleteById(id);
     }
 }

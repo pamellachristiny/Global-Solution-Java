@@ -1,7 +1,8 @@
-package br.com.fiap.global.exeption;
+package br.com.fiap.global.exception;
 
 public class RequisicaoInvalidaException extends RuntimeException {
-    public RequisicaoInvalidaException(String message) {
-        super(message);
+
+    public RequisicaoInvalidaException(String mensagem) {
+        super(mensagem);
     }
 }

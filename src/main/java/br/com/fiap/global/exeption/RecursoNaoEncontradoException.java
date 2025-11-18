@@ -1,7 +1,9 @@
-package br.com.fiap.global.exeption;
+package br.com.fiap.global.exception;
 
 public class RecursoNaoEncontradoException extends RuntimeException {
-    public RecursoNaoEncontradoException(String message) {
-        super(message);
+
+    // Construtor que recebe a mensagem de erro
+    public RecursoNaoEncontradoException(String mensagem) {
+        super(mensagem);
     }
 }
