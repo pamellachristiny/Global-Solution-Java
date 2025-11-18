@@ -1,14 +1,19 @@
-# Imagem base com Java 17
-FROM eclipse-temurin:17-jre
+# ----------- STAGE 1: BUILD -------------
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /build
 
-# Diretório dentro do container
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY src ./src
+RUN mvn package -DskipTests
+
+# ----------- STAGE 2: RUN --------------
+FROM eclipse-temurin:17-jre
 WORKDIR /app
 
-# Copia todo o conteúdo da pasta quarkus-app gerada pelo Maven
-COPY target/quarkus-app /app/
+COPY --from=build /build/target/quarkus-app/ ./
 
-# Porta usada pelo seu Quarkus em produção
 EXPOSE 8081
 
-# Comando de inicialização
 CMD ["java", "-jar", "quarkus-run.jar"]
