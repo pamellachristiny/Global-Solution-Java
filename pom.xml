@@ -16,6 +16,7 @@
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.3.0</surefire-plugin.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
+        <maven-wrapper-plugin.version>3.2.0</maven-wrapper-plugin.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -65,6 +66,24 @@
     </dependencies>
     <build>
         <plugins>
+            <!-- NOVO: Adiciona o Maven Wrapper Plugin para garantir a versão correta do Maven -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-wrapper-plugin</artifactId>
+                <version>${maven-wrapper-plugin.version}</version>
+                <configuration>
+                    <!-- Força o uso da versão mínima exigida pelo Quarkus -->
+                    <mavenVersion>3.8.6</mavenVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>wrapper</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>${quarkus.platform.group-id}</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>

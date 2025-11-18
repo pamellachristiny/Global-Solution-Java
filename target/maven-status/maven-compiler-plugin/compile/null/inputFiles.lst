@@ -12,7 +12,6 @@
 /home/pamella/Área de Trabalho/global/src/main/java/br/com/fiap/global/App.java
 /home/pamella/Área de Trabalho/global/src/main/java/br/com/fiap/global/infra/dao/ChallengeDAO.java
 /home/pamella/Área de Trabalho/global/src/main/java/br/com/fiap/global/model/Curso.java
-/home/pamella/Área de Trabalho/global/src/main/java/br/com/fiap/global/exeption/GlobalExceptionMapper.java
 /home/pamella/Área de Trabalho/global/src/main/java/br/com/fiap/global/service/CursoService.java
 /home/pamella/Área de Trabalho/global/src/main/java/br/com/fiap/global/service/UserService.java
 /home/pamella/Área de Trabalho/global/src/main/java/br/com/fiap/global/model/Professor.java
