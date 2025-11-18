@@ -11,13 +11,16 @@ public class Usuario extends PanacheEntity {
     private String nome;
     private String email;
     private String senha;
+    private String plano;
 
     public Usuario() {}
 
-    public Usuario(String nome, String email, String senha) {
+    public Usuario(String nome, String email, String senha, String plano) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.plano = plano;
+
     }
 
     public Long getId() {
@@ -34,4 +37,12 @@ public class Usuario extends PanacheEntity {
     public void setEmail(String email) { this.email = email; }
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+
+    public String getPlano() {
+        return plano;
+    }
+
+    public void setPlano(String plano) {
+        this.plano = plano;
+    }
 }
